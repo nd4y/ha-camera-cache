@@ -51,6 +51,14 @@ try{
  expect(await card.locator('img').getAttribute('src')===good,'Failed refresh replaced last image');
  expect(await card.locator('.warning').isVisible(),'Failed refresh claimed fresh image');fail=false;
  await card.getByRole('button',{name:'Прямой эфир',exact:true}).click();expect(await page.evaluate(()=>window.opened.join(','))==='camera.source','Live view did not target original camera');
+ await page.evaluate(()=>{window.states['camera.cache'].attributes.frame_source='camera.source';window.card.setConfig({entity:'camera.cache',language:'ru'});window.update();});
+ await card.getByRole('button',{name:'Прямой эфир',exact:true}).click();expect(await page.evaluate(()=>window.opened[1])==='camera.source','Live source was not discovered from cache metadata');
+ await page.evaluate(async()=>{
+   const editor=await customElements.get('camera-cache-card').getConfigElement();editor.setConfig({type:'custom:camera-cache-card',entity:'camera.cache',name:'Preview',live_entity:'camera.source'});editor.hass={language:'en'};document.body.append(editor);
+   editor.addEventListener('config-changed',e=>window.edited=e.detail.config);editor.querySelector('ha-form').dispatchEvent(new CustomEvent('value-changed',{detail:{value:{entity:'camera.other',name:'Other',live_entity:''}}}));
+ });
+ expect(await page.evaluate(()=>window.edited.entity==='camera.other'&&window.edited.name==='Other'),'Visual editor did not emit selected configuration');
+ expect(await page.evaluate(()=>!('live_entity' in window.edited)),'Visual editor did not clear optional override');
  await page.evaluate(()=>{window.states['camera.cache'].state='unavailable';window.update();});expect(await card.locator('.warning').isVisible(),'Unavailable cache looks fresh');
  for(const width of [320,390,1280]){await page.setViewportSize({width,height:844});expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'Horizontal overflow '+width);}
  expect(await page.locator('video,iframe').count()===0,'Unexpected continuous video or iframe');
