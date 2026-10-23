@@ -1,0 +1,39 @@
+{
+  "title": "Camera Cache",
+  "config": {
+    "step": {
+      "user": {
+        "title": "Cache a camera in memory",
+        "description": "Choose an existing camera. One JPEG or PNG frame is refreshed in RAM; no video is recorded. The source's provider may still receive snapshot requests.",
+        "data": {
+          "source_camera": "Source camera",
+          "name": "Cached camera name (optional)",
+          "refresh_interval": "Refresh interval (seconds)",
+          "stale_after": "Mark stale after (seconds)",
+          "timeout": "Snapshot timeout (seconds)"
+        }
+      }
+    },
+    "error": {
+      "invalid_camera": "Select an existing camera.",
+      "recursive_camera": "A cache camera cannot be used as a source.",
+      "invalid_timing": "The stale threshold must be at least the refresh interval. Check the time limits."
+    },
+    "abort": {"already_configured": "This source camera already has a cache."}
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Camera cache settings",
+        "description": "Changes reload this cache only. Disabling or unloading clears its frame from server RAM.",
+        "data": {
+          "enabled": "Refresh enabled",
+          "refresh_interval": "Refresh interval (seconds)",
+          "stale_after": "Mark stale after (seconds)",
+          "timeout": "Snapshot timeout (seconds)"
+        }
+      }
+    },
+    "error": {"invalid_timing": "The stale threshold must be at least the refresh interval. Check the time limits."}
+  }
+}
