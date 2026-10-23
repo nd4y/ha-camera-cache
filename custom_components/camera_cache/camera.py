@@ -34,7 +34,7 @@ class CachedCamera(Camera):
         self._task = None
         self.cache = FrameCache(self.fetch, interval=options["refresh_interval"],
                                 stale_after=options["stale_after"], timeout=options["timeout"],
-                                notify=self.async_write_ha_state)
+                                notify=self._cache_updated)
 
     async def fetch(self):
         source = resolve_source(self.hass, self.entry.data)
@@ -46,9 +46,9 @@ class CachedCamera(Camera):
             raise HomeAssistantError("Unsupported image format")
         return image.content
 
-    @property
-    def content_type(self):
-        return image_type(self.cache.read()) or "image/jpeg"
+    def _cache_updated(self):
+        self.content_type = image_type(self.cache.read()) or "image/jpeg"
+        self.async_write_ha_state()
 
     @property
     def available(self):

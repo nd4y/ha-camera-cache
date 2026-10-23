@@ -40,7 +40,6 @@ class NativeTests(unittest.IsolatedAsyncioTestCase):
         self.entry=SimpleNamespace(entry_id='cache-entry',title='Synthetic preview',data=self.data,options={})
         self.camera=CachedCamera(self.hass,self.entry,DEFAULTS)
         self.camera.async_write_ha_state=Mock()
-        self.camera.cache.notify=self.camera.async_write_ha_state
 
     async def asyncTearDown(self):
         self.camera.cache.close()
