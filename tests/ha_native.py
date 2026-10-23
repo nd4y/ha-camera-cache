@@ -12,6 +12,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.components.camera import Camera
 from homeassistant.components.lovelace.resources import ResourceStorageCollection
 from homeassistant.helpers import entity_registry as er
+from homeassistant.helpers import area_registry, device_registry, floor_registry, label_registry
 
 from custom_components.camera_cache.camera import CachedCamera
 from custom_components.camera_cache.config_flow import CameraCacheFlow, CacheOptionsFlow
@@ -26,6 +27,10 @@ class NativeTests(unittest.IsolatedAsyncioTestCase):
     async def asyncSetUp(self):
         self.temp=tempfile.TemporaryDirectory()
         self.hass=HomeAssistant(self.temp.name)
+        await floor_registry.async_load(self.hass)
+        await area_registry.async_load(self.hass)
+        await label_registry.async_load(self.hass)
+        await device_registry.async_load(self.hass)
         self.registry=await er.async_load(self.hass)
         self.source=self.registry.async_get_or_create('camera','test_source','source-1',suggested_object_id='synthetic_source')
         self.hass.states.async_set(self.source.entity_id,'idle',{'friendly_name':'Synthetic camera'})

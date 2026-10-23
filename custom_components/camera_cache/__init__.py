@@ -1,8 +1,11 @@
 """A standalone memory-only snapshot cache for existing HA camera entities."""
 from homeassistant.const import Platform
+from homeassistant.helpers import config_validation as cv
 
+from .const import DOMAIN
 from .frontend import async_register_frontend
 
+CONFIG_SCHEMA = cv.config_entry_only_config_schema(DOMAIN)
 PLATFORMS = [Platform.CAMERA]
 
 

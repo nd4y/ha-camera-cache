@@ -26,7 +26,7 @@ class SettingsTests(unittest.TestCase):
         component=ROOT/'custom_components/camera_cache'
         manifest=json.loads((component/'manifest.json').read_text())
         self.assertEqual(manifest['domain'],'camera_cache')
-        self.assertEqual(manifest['dependencies'],['camera','lovelace'])
+        self.assertEqual(manifest['dependencies'],['camera','http','lovelace'])
         self.assertEqual(manifest['requirements'],[])
         self.assertEqual(manifest['version'],module.VERSION)
         for file in component.rglob('*'):
