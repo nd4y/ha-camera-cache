@@ -1,0 +1,8 @@
+__pycache__/
+*.pyc
+.pytest_cache/
+.coverage
+node_modules/
+release/
+*-report.json
+.DS_Store
