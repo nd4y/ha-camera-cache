@@ -1,0 +1,13 @@
+{
+  "domain": "camera_cache",
+  "name": "Camera Cache",
+  "codeowners": ["@nd4y"],
+  "config_flow": true,
+  "dependencies": ["camera", "lovelace"],
+  "documentation": "https://github.com/nd4y/ha-camera-cache",
+  "integration_type": "helper",
+  "iot_class": "local_polling",
+  "issue_tracker": "https://github.com/nd4y/ha-camera-cache/issues",
+  "requirements": [],
+  "version": "0.1.0"
+}

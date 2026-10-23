@@ -1,0 +1,62 @@
+name: Checks
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+  workflow_call:
+permissions:
+  contents: read
+jobs:
+  cache-and-package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.14'
+      - run: python -m unittest discover -s tests -p 'test_*.py' -v
+      - run: python -m compileall -q custom_components
+      - run: python scripts/package.py
+      - uses: actions/upload-artifact@v7.0.2
+        with:
+          name: camera-cache-package
+          path: release/*
+          if-no-files-found: error
+  native-ha:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - name: Test against the supported Home Assistant runtime
+        run: >-
+          docker run --rm --network none --cpus=2 --memory=2g
+          -v "$GITHUB_WORKSPACE:/work:ro" -w /work
+          --entrypoint python ghcr.io/home-assistant/home-assistant:2026.9.4
+          tests/ha_native.py
+  browser:
+    runs-on: ubuntu-latest
+    container: mcr.microsoft.com/playwright:v1.64.0-noble
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: actions/setup-node@v7.1.0
+        with:
+          node-version: '24'
+      - run: npm install --prefix /tmp/browser-tools --no-save --no-package-lock playwright-core@1.64.0
+      - run: node --test tests/test_memory_card.mjs
+      - run: node tests/test_memory_browser.mjs "$GITHUB_WORKSPACE" /tmp/browser-tools
+      - uses: actions/upload-artifact@v7.0.2
+        with:
+          name: camera-cache-browser-report
+          path: memory-browser-report.json
+  hacs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: hacs/action@main
+        with:
+          category: integration
+  hassfest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: home-assistant/actions/hassfest@master

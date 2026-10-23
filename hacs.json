@@ -1,0 +1,7 @@
+{
+  "name": "Camera Cache",
+  "homeassistant": "2026.9.0",
+  "hide_default_branch": true,
+  "zip_release": true,
+  "filename": "camera_cache.zip"
+}
